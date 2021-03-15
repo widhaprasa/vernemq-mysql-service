@@ -1,0 +1,15 @@
+{
+  "name": "vernemq-mysql-service",
+  "version": "1.0.0",
+  "description": "VerneMQ Mysql Service",
+  "author": "Widhaprasa Waliprana <widhaprasa@gmail.com>",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1",
+    "mysql": "^2.18.1",
+    "underscore": "^1.9.1"
+  }
+}
