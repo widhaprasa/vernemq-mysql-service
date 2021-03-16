@@ -22,7 +22,7 @@ mysqlConfig.database = !_.isEmpty(process.env.MYSQL_DB)
   : "vmq_mysql";
 mysqlConfig.user = !_.isEmpty(process.env.MYSQL_USER)
   ? process.env.MYSQL_USER
-  : "root";
+  : "vmq_mysql";
 mysqlConfig.password = !_.isEmpty(process.env.MYSQL_PASSWORD)
   ? process.env.MYSQL_PASSWORD
   : "vmq_mysql";
@@ -189,12 +189,17 @@ app.post("/su/add", (req, res) => {
     return;
   }
 
+  let mountpoint = '';
+  if (_.isString(body.mountpoint)) {
+    mountpoint = body.mountpoint;
+  }
+
   mysqlPool.getConnection((err, connection) => {
     if (err) {
       res.sendStatus(500);
       return;
     }
-    auth.createSU(connection, body.username, body.password, function (code) {
+    auth.createSU(connection, mountpoint, body.username, body.password, function (code) {
       connection.release();
       if (code == 0) {
         res.sendStatus(200);
@@ -218,6 +223,11 @@ app.post("/user/add", (req, res) => {
     return;
   }
 
+  let mountpoint = '';
+  if (_.isString(body.mountpoint)) {
+    mountpoint = body.mountpoint;
+  }
+
   mysqlPool.getConnection((err, connection) => {
     if (err) {
       res.sendStatus(500);
@@ -225,6 +235,7 @@ app.post("/user/add", (req, res) => {
     }
     auth.createUser(
       connection,
+      mountpoint,
       body.username,
       body.group,
       body.password,

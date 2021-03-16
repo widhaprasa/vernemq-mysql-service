@@ -116,7 +116,7 @@ function listSU(mysqlConnection, callback) {
 }
 
 // Create Super User
-function createSU(mysqlConnection, username, password, callback) {
+function createSU(mysqlConnection, mountpoint, username, password, callback) {
   username = username.trim();
   password = password.trim();
 
@@ -137,7 +137,7 @@ function createSU(mysqlConnection, username, password, callback) {
     const insertSql =
       "INSERT INTO vmq_auth_acl (mountpoint, group_, username, password, publish_acl, subscribe_acl) " +
       "VALUES ('" +
-      username +
+      mountpoint +
       "', 'su', '" +
       username +
       "', '" +
@@ -160,6 +160,7 @@ function createSU(mysqlConnection, username, password, callback) {
 // Create User
 function createUser(
   mysqlConnection,
+  mountpoint,
   username,
   group,
   password,
@@ -198,7 +199,7 @@ function createUser(
     const insertSql =
       "INSERT INTO vmq_auth_acl (mountpoint, group_, username, password, publish_acl, subscribe_acl) " +
       "VALUES ('" +
-      username +
+      mountpoint +
       "', '" +
       group +
       "', '" +
