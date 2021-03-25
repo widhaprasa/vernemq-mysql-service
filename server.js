@@ -1,46 +1,49 @@
-"use strict";
+'use strict';
 
 // Express
-var express = require("express");
+var express = require('express');
 const EXPRESS_PORT = 3000;
-const EXPRESS_HOST = "0.0.0.0";
+const EXPRESS_HOST = '0.0.0.0';
 
 // Underscore
-var _ = require("underscore");
+var _ = require('underscore');
 
 // MySQL
-var mysql = require("mysql");
+var mysql = require('mysql');
 var mysqlConfig = {};
 mysqlConfig.host = !_.isEmpty(process.env.MYSQL_HOST)
   ? process.env.MYSQL_HOST
-  : "localhost";
+  : 'localhost';
 mysqlConfig.port = !_.isEmpty(process.env.MYSQL_PORT)
   ? process.env.MYSQL_PORT
   : 3306;
 mysqlConfig.database = !_.isEmpty(process.env.MYSQL_DB)
   ? process.env.MYSQL_DB
-  : "vmq_mysql";
+  : 'vmq_mysql';
 mysqlConfig.user = !_.isEmpty(process.env.MYSQL_USER)
   ? process.env.MYSQL_USER
-  : "vmq_mysql";
+  : 'vmq_mysql';
 mysqlConfig.password = !_.isEmpty(process.env.MYSQL_PASSWORD)
   ? process.env.MYSQL_PASSWORD
-  : "vmq_mysql";
+  : 'vmq_mysql';
 
 var mysqlPool = mysql.createPool(mysqlConfig);
 
 // Auth
-var auth = require("./auth.js");
+var auth = require('./auth.js');
+
+// Validation
+var validation = require('./validation.js');
 
 // App
 var app = express();
 app.use(express.json());
 
-app.get("/health", (req, res) => {
-  res.send("ok");
+app.get('/health', (req, res) => {
+  res.send('ok');
 });
 
-app.get("/account/count", (req, res) => {
+app.get('/account/count', (req, res) => {
   mysqlPool.getConnection((err, connection) => {
     if (err) {
       res.sendStatus(500);
@@ -49,12 +52,12 @@ app.get("/account/count", (req, res) => {
 
     auth.countAccount(connection, function (result) {
       connection.release();
-      res.send("" + result);
+      res.send('' + result);
     });
   });
 });
 
-app.post("/account/exist", (req, res) => {
+app.post('/account/exist', (req, res) => {
   const body = req.body;
   if (!_.isString(body.username)) {
     res.sendStatus(400);
@@ -74,7 +77,7 @@ app.post("/account/exist", (req, res) => {
   });
 });
 
-app.post("/account/change/password", (req, res) => {
+app.post('/account/change/password', (req, res) => {
   const body = req.body;
   if (!_.isString(body.username) || !_.isString(body.password)) {
     res.sendStatus(400);
@@ -102,7 +105,7 @@ app.post("/account/change/password", (req, res) => {
   });
 });
 
-app.post("/account/remove", (req, res) => {
+app.post('/account/remove', (req, res) => {
   const body = req.body;
   if (!_.isString(body.username)) {
     res.sendStatus(400);
@@ -125,7 +128,7 @@ app.post("/account/remove", (req, res) => {
   });
 });
 
-app.post("/account/remove/group", (req, res) => {
+app.post('/account/remove/group', (req, res) => {
   const body = req.body;
   if (!_.isString(body.group)) {
     res.sendStatus(400);
@@ -148,7 +151,7 @@ app.post("/account/remove/group", (req, res) => {
   });
 });
 
-app.post("/account/clear", (req, res) => {
+app.post('/account/clear', (req, res) => {
   mysqlPool.getConnection((err, connection) => {
     if (err) {
       res.sendStatus(500);
@@ -165,7 +168,7 @@ app.post("/account/clear", (req, res) => {
   });
 });
 
-app.get("/su/list", (req, res) => {
+app.get('/su/list', (req, res) => {
   mysqlPool.getConnection((err, connection) => {
     if (err) {
       res.sendStatus(500);
@@ -182,7 +185,7 @@ app.get("/su/list", (req, res) => {
   });
 });
 
-app.post("/su/add", (req, res) => {
+app.post('/su/add', (req, res) => {
   const body = req.body;
   if (!_.isString(body.username) || !_.isString(body.password)) {
     res.sendStatus(400);
@@ -210,7 +213,7 @@ app.post("/su/add", (req, res) => {
   });
 });
 
-app.post("/user/add", (req, res) => {
+app.post('/user/add', (req, res) => {
   const body = req.body;
   if (
     !_.isString(body.username) ||
@@ -228,6 +231,14 @@ app.post("/user/add", (req, res) => {
     mountpoint = body.mountpoint;
   }
 
+  // Validate acls
+  const publish_acl = validation.validateAcl(body.publish_acl);
+  const subscribe_acl = validation.validateAcl(body.subscribe_acl);
+  if (publish_acl == null || subscribe_acl == null) {
+    res.sendStatus(400);
+    return;
+  }
+
   mysqlPool.getConnection((err, connection) => {
     if (err) {
       res.sendStatus(500);
@@ -239,8 +250,8 @@ app.post("/user/add", (req, res) => {
       body.username,
       body.group,
       body.password,
-      body.publish_acl,
-      body.subscribe_acl,
+      publish_acl,
+      subscribe_acl,
       function (code) {
         connection.release();
         if (code == 0) {
@@ -255,9 +266,9 @@ app.post("/user/add", (req, res) => {
 
 // Main
 app.listen(EXPRESS_PORT, EXPRESS_HOST, function () {
-  console.log("##################################################");
-  console.log("");
-  console.log("Listening on " + EXPRESS_HOST + ":" + EXPRESS_PORT);
-  console.log("");
-  console.log("##################################################");
+  console.log('##################################################');
+  console.log('');
+  console.log('Listening on ' + EXPRESS_HOST + ':' + EXPRESS_PORT);
+  console.log('');
+  console.log('##################################################');
 });

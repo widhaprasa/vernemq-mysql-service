@@ -1,10 +1,9 @@
-// Underscore
-var _ = require("underscore");
-var crypto = require("crypto");
+var _ = require('underscore');
+var crypto = require('crypto');
 
 // SHA256
 function buildSha256(password) {
-  return crypto.createHash("sha256").update(password).digest("hex");
+  return crypto.createHash('sha256').update(password).digest('hex');
 }
 
 // Count Account
@@ -185,16 +184,6 @@ function createUser(
       return;
     }
 
-    const publish_acl_saves = [];
-    for (let i in publish_acl) {
-      publish_acl_saves.push({ pattern: publish_acl[i] });
-    }
-
-    const subscribe_acl_saves = [];
-    for (let i in subscribe_acl) {
-      subscribe_acl_saves.push({ pattern: subscribe_acl[i] });
-    }
-
     const sha256 = buildSha256(password);
     const insertSql =
       "INSERT INTO vmq_auth_acl (mountpoint, group_, username, password, publish_acl, subscribe_acl) " +
@@ -207,9 +196,9 @@ function createUser(
       "', '" +
       sha256 +
       "', '" +
-      JSON.stringify(publish_acl_saves) +
+      JSON.stringify(publish_acl) +
       "', '" +
-      JSON.stringify(subscribe_acl_saves) +
+      JSON.stringify(subscribe_acl) +
       "')";
 
     mysqlConnection.query(insertSql, function (err, result) {
