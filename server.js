@@ -18,10 +18,10 @@ var _mysql = require("mysql");
 var _mysqlConfig = {};
 _mysqlConfig.host = !_.isEmpty(process.env.MYSQL_HOST)
   ? process.env.MYSQL_HOST
-  : "m2mdev.tritronik.com";
+  : "localhost";
 _mysqlConfig.port = !_.isEmpty(process.env.MYSQL_PORT)
   ? process.env.MYSQL_PORT
-  : 43306;
+  : 3306;
 _mysqlConfig.database = !_.isEmpty(process.env.MYSQL_DB)
   ? process.env.MYSQL_DB
   : "vmq_mysql";
