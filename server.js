@@ -338,9 +338,9 @@ _app.post("/user/add", (req, res) => {
   }
 
   // Validate acls
-  const publish_acl = _validation.validateAcl(body.publish_acl);
-  const subscribe_acl = _validation.validateAcl(body.subscribe_acl);
-  if (publish_acl == null || subscribe_acl == null) {
+  const publishAcl = _validation.validateAcl(body.publish_acl);
+  const subscribeAcl = _validation.validateAcl(body.subscribe_acl);
+  if (publishAcl == null || subscribeAcl == null) {
     res.sendStatus(400);
     return;
   }
@@ -356,8 +356,8 @@ _app.post("/user/add", (req, res) => {
       body.username,
       body.group,
       body.password,
-      publish_acl,
-      subscribe_acl,
+      publishAcl,
+      subscribeAcl,
       function (code) {
         connection.release();
         if (code == 0) {
