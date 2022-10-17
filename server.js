@@ -18,10 +18,10 @@ var _mysql = require("mysql");
 var _mysqlConfig = {};
 _mysqlConfig.host = !_.isEmpty(process.env.MYSQL_HOST)
   ? process.env.MYSQL_HOST
-  : "localhost";
+  : "m2mdev.tritronik.com";
 _mysqlConfig.port = !_.isEmpty(process.env.MYSQL_PORT)
   ? process.env.MYSQL_PORT
-  : 3306;
+  : 43306;
 _mysqlConfig.database = !_.isEmpty(process.env.MYSQL_DB)
   ? process.env.MYSQL_DB
   : "vmq_mysql";
@@ -64,6 +64,29 @@ _app.get("/account/count", (req, res) => {
     _query.countAccount(connection, mountpoint, function (result) {
       connection.release();
       res.send("" + result);
+    });
+  });
+});
+
+_app.get("/account/list", (req, res) => {
+  const query = req.query;
+  var mountpoint = _mountpoint;
+  if (_.isString(query.mountpoint)) {
+    mountpoint = query.mountpoint;
+  }
+
+  _mysqlPool.getConnection((err, connection) => {
+    if (err) {
+      res.sendStatus(500);
+      return;
+    }
+    _query.listAccount(connection, mountpoint, function (result) {
+      connection.release();
+      const arr = [];
+      for (var i in result) {
+        arr.push(result[i].username);
+      }
+      res.send(arr);
     });
   });
 });
@@ -270,6 +293,29 @@ _app.post("/su/add", (req, res) => {
         }
       }
     );
+  });
+});
+
+_app.get("/user/list", (req, res) => {
+  const query = req.query;
+  var mountpoint = _mountpoint;
+  if (_.isString(query.mountpoint)) {
+    mountpoint = query.mountpoint;
+  }
+
+  _mysqlPool.getConnection((err, connection) => {
+    if (err) {
+      res.sendStatus(500);
+      return;
+    }
+    _query.listUser(connection, mountpoint, function (result) {
+      connection.release();
+      const arr = [];
+      for (var i in result) {
+        arr.push(result[i].username);
+      }
+      res.send(arr);
+    });
   });
 });
 

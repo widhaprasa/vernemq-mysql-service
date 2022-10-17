@@ -23,6 +23,18 @@ function countAccount(mysqlConnection, mountpoint, callback) {
   });
 }
 
+// List Account
+function listAccount(mysqlConnection, mountpoint, callback) {
+  const searchSql = `SELECT username FROM ${_table} WHERE mountpoint = '${mountpoint}'`;
+  mysqlConnection.query(searchSql, function (err, result) {
+    if (err) {
+      callback([]);
+      return;
+    }
+    callback(result);
+  });
+}
+
 // Account Exist
 function accountExist(mysqlConnection, mountpoint, username, callback) {
   username = username.trim();
@@ -150,6 +162,18 @@ function createSU(mysqlConnection, mountpoint, username, password, callback) {
   });
 }
 
+// List User
+function listUser(mysqlConnection, mountpoint, callback) {
+  const searchSql = `SELECT username FROM ${_table} WHERE mountpoint = '${mountpoint}' AND group_ != 'su'`;
+  mysqlConnection.query(searchSql, function (err, result) {
+    if (err) {
+      callback([]);
+      return;
+    }
+    callback(result);
+  });
+}
+
 // Create User
 function createUser(
   mysqlConnection,
@@ -238,6 +262,7 @@ function updateAclUser(
 
 module.exports = {
   countAccount,
+  listAccount,
   accountExist,
   updatePasswordAccount,
   deleteAccount,
@@ -245,6 +270,7 @@ module.exports = {
   clearAccount,
   listSU,
   createSU,
+  listUser,
   createUser,
   updateAclUser,
 };
