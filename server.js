@@ -383,8 +383,8 @@ _app.post("/user/update/acl", (req, res) => {
   }
 
   // Validate acls
-  const publish_acl = _validation.validateAcl(body.publish_acl);
-  const subscribe_acl = _validation.validateAcl(body.subscribe_acl);
+  const publishAcl = _validation.validateAcl(body.publish_acl);
+  const subscribeAcl = _validation.validateAcl(body.subscribe_acl);
 
   _mysqlPool.getConnection((err, connection) => {
     if (err) {
@@ -395,8 +395,8 @@ _app.post("/user/update/acl", (req, res) => {
       connection,
       mountpoint,
       body.username,
-      publish_acl,
-      subscribe_acl,
+      publishAcl,
+      subscribeAcl,
       function (code) {
         connection.release();
         if (code == 0) {

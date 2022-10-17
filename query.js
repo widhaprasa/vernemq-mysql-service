@@ -181,8 +181,8 @@ function createUser(
   username,
   group,
   password,
-  publish_acl,
-  subscribe_acl,
+  publishAcl,
+  subscribeAcl,
   callback
 ) {
   username = username.trim();
@@ -202,11 +202,11 @@ function createUser(
     }
 
     const sha256 = buildSha256(password);
-    const s_publish_acl = JSON.stringify(publish_acl);
-    const s_subscribe_acl = JSON.stringify(subscribe_acl);
+    const sPublishAcl = JSON.stringify(publishAcl);
+    const sSubscribeAcl = JSON.stringify(subscribeAcl);
     const insertSql =
       `INSERT INTO ${_table} (mountpoint, group_, username, password, publish_acl, subscribe_acl) ` +
-      `VALUES ('${mountpoint}', '${group}', '${username}', '${sha256}', '${s_publish_acl}', '${s_subscribe_acl}')`;
+      `VALUES ('${mountpoint}', '${group}', '${username}', '${sha256}', '${sPublishAcl}', '${sSubscribeAcl}')`;
 
     mysqlConnection.query(insertSql, function (err, result) {
       if (err) {
@@ -223,23 +223,23 @@ function updateAclUser(
   mysqlConnection,
   mountpoint,
   username,
-  publish_acl,
-  subscribe_acl,
+  publishAcl,
+  subscribeAcl,
   callback
 ) {
   username = username.trim();
 
   var updateSql;
-  if (!_.isEmpty(publish_acl) && !_.isEmpty(subscribe_acl)) {
-    const s_publish_acl = JSON.stringify(publish_acl);
-    const s_subscribe_acl = JSON.stringify(subscribe_acl);
-    updateSql = `UPDATE ${_table} SET publish_acl = '${s_publish_acl}', subscribe_acl = '${s_subscribe_acl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
-  } else if (!_.isEmpty(publish_acl)) {
-    const s_publish_acl = JSON.stringify(publish_acl);
-    updateSql = `UPDATE ${_table} SET publish_acl = '${s_publish_acl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
-  } else if (!_.isEmpty(subscribe_acl)) {
-    const s_subscribe_acl = JSON.stringify(subscribe_acl);
-    updateSql = `UPDATE ${_table} SET subscribe_acl = '${s_subscribe_acl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
+  if (!_.isEmpty(publishAcl) && !_.isEmpty(subscribeAcl)) {
+    const sPublishAcl = JSON.stringify(publishAcl);
+    const sSubscribeAcl = JSON.stringify(subscribeAcl);
+    updateSql = `UPDATE ${_table} SET publish_acl = '${sPublishAcl}', subscribe_acl = '${sSubscribeAcl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
+  } else if (!_.isEmpty(publishAcl)) {
+    const sPublishAcl = JSON.stringify(publishAcl);
+    updateSql = `UPDATE ${_table} SET publish_acl = '${sPublishAcl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
+  } else if (!_.isEmpty(subscribeAcl)) {
+    const sSubscribeAcl = JSON.stringify(subscribeAcl);
+    updateSql = `UPDATE ${_table} SET subscribe_acl = '${sSubscribeAcl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
   } else {
     callback(-3);
     return;
