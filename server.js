@@ -9,28 +9,22 @@ const EXPRESS_HOST = "0.0.0.0";
 var _ = require("underscore");
 
 // Env
-var _mountpoint = !_.isEmpty(process.env.mountpoint)
-  ? process.env.DEFAULT_MOUNTPOINT
-  : "";
+var _mountpoint =
+  process.env.mountpoint != null ? process.env.DEFAULT_MOUNTPOINT : "";
 
 // Env MySQL
 var _mysql = require("mysql");
 var _mysqlConfig = {};
-_mysqlConfig.host = !_.isEmpty(process.env.MYSQL_HOST)
-  ? process.env.MYSQL_HOST
-  : "localhost";
-_mysqlConfig.port = !_.isEmpty(process.env.MYSQL_PORT)
-  ? process.env.MYSQL_PORT
-  : 3306;
-_mysqlConfig.database = !_.isEmpty(process.env.MYSQL_DB)
-  ? process.env.MYSQL_DB
-  : "vmq_mysql";
-_mysqlConfig.user = !_.isEmpty(process.env.MYSQL_USER)
-  ? process.env.MYSQL_USER
-  : "vmq_mysql";
-_mysqlConfig.password = !_.isEmpty(process.env.MYSQL_PASSWORD)
-  ? process.env.MYSQL_PASSWORD
-  : "vmq_mysql";
+_mysqlConfig.host =
+  process.env.MYSQL_HOST != null ? process.env.MYSQL_HOST : "localhost";
+_mysqlConfig.port =
+  process.env.MYSQL_PORT != null ? process.env.MYSQL_PORT : 3306;
+_mysqlConfig.database =
+  process.env.MYSQL_DB != null ? process.env.MYSQL_DB : "vmq_mysql";
+_mysqlConfig.user =
+  process.env.MYSQL_USER != null ? process.env.MYSQL_USER : "vmq_mysql";
+_mysqlConfig.password =
+  process.env.MYSQL_PASSWORD != null ? process.env.MYSQL_PASSWORD : "vmq_mysql";
 
 var _mysqlPool = _mysql.createPool(_mysqlConfig);
 

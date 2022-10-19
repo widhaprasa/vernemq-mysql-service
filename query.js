@@ -1,10 +1,10 @@
-var _ = require("underscore");
 var crypto = require("crypto");
 
 // Env
-var _table = !_.isEmpty(process.env.MYSQL_DEFAULT_TABLE)
-  ? process.env.MYSQL_DEFAULT_TABLE
-  : "vmq_auth_acl";
+var _table =
+  process.env.MYSQL_DEFAULT_TABLE != null
+    ? process.env.MYSQL_DEFAULT_TABLE
+    : "vmq_auth_acl";
 
 // SHA256
 function buildSha256(password) {
@@ -230,14 +230,14 @@ function updateAclUser(
   username = username.trim();
 
   var updateSql;
-  if (!_.isEmpty(publishAcl) && !_.isEmpty(subscribeAcl)) {
+  if (publishAcl != null && subscribeAcl != null) {
     const sPublishAcl = JSON.stringify(publishAcl);
     const sSubscribeAcl = JSON.stringify(subscribeAcl);
     updateSql = `UPDATE ${_table} SET publish_acl = '${sPublishAcl}', subscribe_acl = '${sSubscribeAcl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
-  } else if (!_.isEmpty(publishAcl)) {
+  } else if (publishAcl != null) {
     const sPublishAcl = JSON.stringify(publishAcl);
     updateSql = `UPDATE ${_table} SET publish_acl = '${sPublishAcl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
-  } else if (!_.isEmpty(subscribeAcl)) {
+  } else if (subscribeAcl != null) {
     const sSubscribeAcl = JSON.stringify(subscribeAcl);
     updateSql = `UPDATE ${_table} SET subscribe_acl = '${sSubscribeAcl}' WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
   } else {
