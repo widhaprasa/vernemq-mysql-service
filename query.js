@@ -1,7 +1,7 @@
-var crypto = require("crypto");
+const crypto = require("crypto");
 
 // Env
-var _table =
+const _table =
   process.env.MYSQL_DEFAULT_TABLE != null
     ? process.env.MYSQL_DEFAULT_TABLE
     : "vmq_auth_acl";
@@ -38,7 +38,7 @@ function listAccount(mysqlConnection, mountpoint, callback) {
 // Account Exist
 function accountExist(mysqlConnection, mountpoint, username, callback) {
   username = username.trim();
-  const searchSql = `SELECT mountpoint, username, FROM ${_table} WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
+  const searchSql = `SELECT mountpoint, username FROM ${_table} WHERE mountpoint = '${mountpoint}' AND username = '${username}'`;
   mysqlConnection.query(searchSql, function (err, result) {
     if (err) {
       callback(-1);
@@ -72,7 +72,6 @@ function updatePasswordAccount(
       callback(-2);
       return;
     }
-
     callback(0);
   });
 }
@@ -156,7 +155,6 @@ function createSU(mysqlConnection, mountpoint, username, password, callback) {
         callback(-3);
         return;
       }
-
       callback(0);
     });
   });
@@ -255,7 +253,6 @@ function updateAclUser(
       callback(-2);
       return;
     }
-
     callback(0);
   });
 }
