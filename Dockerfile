@@ -1,4 +1,8 @@
-FROM node:10.24.0-alpine3.11
+# Base image
+FROM node:10.24.1-alpine3.11
+
+# Add curl
+RUN apk --no-cache add curl
 
 # Create app directory
 WORKDIR /usr/src/app
